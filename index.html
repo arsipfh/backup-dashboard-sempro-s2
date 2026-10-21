@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Mahasiswa — Status Seminar Proposal Tesis</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--navy:#0b2e6b;--gold:#c9a227;--green:#1a7a4a;--red:#c0392b;--gray:#f4f6f9;--border:#d0d8e8;}
+body{background:#eef1f7;font-family:'Segoe UI',system-ui,sans-serif;margin:0;}
+.header{background:linear-gradient(135deg,#0b2e6b,#1a4a9e);color:#fff;padding:1.6rem 1rem;text-align:center;}
+.header img{width:60px;border-radius:50%;border:3px solid var(--gold);margin-bottom:.5rem;}
+.header h5{margin:0;font-weight:700;}
+.card-box{background:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(11,46,107,.09);padding:1.4rem;margin-bottom:1.2rem;}
+.status-badge{display:inline-block;padding:.35rem .85rem;border-radius:20px;font-size:.8rem;font-weight:700;}
+.sb-lengkap{background:#cffafe;color:#0e7490;}
+.sb-menunggu{background:#e2e8f5;color:#374259;}
+.sb-jadwal{background:#d1e7dd;color:#0a3622;}
+.sb-tidak{background:#fee2e2;color:#991b1b;}
+.sb-selesai{background:#d4edda;color:#155724;}
+.file-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;font-size:.85rem;}
+.file-row .ok{color:var(--green);} .file-row .no{color:#aaa;font-style:italic;}
+.catatan-box{background:#fef2f2;border:1.5px solid #fca5a5;border-left:5px solid #dc2626;border-radius:10px;padding:1rem 1.2rem;}
+.btn-navy{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;font-weight:600;}
+.btn-revisi{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none;border-radius:8px;padding:.55rem 1.1rem;font-weight:700;}
+
+
+/* =========================
+   LOGIN INPUT PREMIUM
+   ========================= */
+
+.login-input-group {
+  position: relative;
+  width: 100%;
+}
+
+/* Icon kiri */
+.login-input-group .input-icon {
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7b879d;
+  font-size: 1.05rem;
+  line-height: 1;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Input */
+.login-input-group .login-input {
+  width: 100%;
+  height: 46px;
+
+  /* INI yang membuat teks benar-benar menjauh dari icon */
+  padding: 0 45px 0 58px !important;
+
+  border: 1px solid #d0d8e8;
+  border-radius: 10px;
+
+  font-size: .9rem;
+  line-height: 46px;
+
+  color: #344054;
+  background: #fff;
+
+  transition: all .2s ease;
+}
+
+/* Placeholder */
+.login-input-group .login-input::placeholder {
+  color: #a0a8b8;
+  opacity: 1;
+}
+
+/* Saat diklik */
+.login-input-group .login-input:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(11,46,107,.10);
+  outline: none;
+}
+
+/* Icon password kanan */
+.login-input-group .password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+
+  color: #7b879d;
+  padding: 0;
+  margin: 0;
+
+  z-index: 10;
+  cursor: pointer;
+}
+
+.login-input-group .password-toggle:hover {
+  color: var(--navy);
+}
+
+/* Label */
+.login-label {
+  font-weight: 600;
+  color: #344054;
+  margin-bottom: .45rem;
+}
+
+.password-toggle{
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:none;
+  color:#7b879d;
+  padding:0;
+  cursor:pointer;
+  z-index:3;
+}
+
+.password-toggle:hover{
+  color:var(--navy);
+}
+
+.login-label{
+  font-weight:600;
+  color:#344054;
+  margin-bottom:.45rem;
+}
+
+
+/* ═══ TABEL DASHBOARD (gaya Portal Satu Atap) ═══ */
+.tbl-wrap-dash{overflow-x:auto;background:#fff;}
+.tbl-dash{border-collapse:separate;border-spacing:0;width:100%;min-width:1100px;margin-bottom:0;font-size:.85rem;}
+.tbl-dash thead th{background:var(--navy);color:#fff;font-weight:600;border:none;padding:1rem .75rem;white-space:nowrap;font-size:.83rem;}
+.tbl-dash thead th:first-child{border-radius:8px 0 0 0;}
+.tbl-dash thead th:last-child{border-radius:0 8px 0 0;}
+.tbl-dash tbody td{padding:.875rem .75rem;vertical-align:middle;border-bottom:1px solid #e9ecef;white-space:nowrap;}
+.tbl-dash tbody td.wrap{white-space:normal;word-wrap:break-word;max-width:220px;line-height:1.5;}
+.tbl-dash tbody tr:hover{background:#eef4ff;}
+.cb-title{font-weight:700;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;font-size:1.05rem;}
+
+.btn-status{font-weight:600;padding:.5rem 1rem;font-size:.83rem;border:none;border-radius:8px;color:#fff;
+  white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:transform .2s;text-decoration:none;}
+button.btn-status:hover,a.btn-status:hover{transform:translateY(-2px);color:#fff;}
+.bs-primary{background:linear-gradient(135deg,var(--navy),#1a4a9e);}
+.bs-success{background:linear-gradient(135deg,#198754,#146c43);}
+.bs-danger{background:linear-gradient(135deg,#dc3545,#b91c1c);}
+.bs-warning{background:#ffc107;color:#000;}
+button.bs-warning:hover{color:#000;}
+.bs-secondary{background:#6c757d;cursor:not-allowed;opacity:.85;}
+.bs-outline{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+button.bs-outline:hover,a.bs-outline:hover{background:#eef1f7;color:var(--navy);}
+.bs-tone{background:linear-gradient(135deg,var(--tc),var(--tc2));color:#fff;}
+
+.chip-status{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .65rem;border-radius:6px;font-size:.72rem;font-weight:600;border:none;}
+.chip-no{background:#f8d7da;color:#842029;border:1px solid #f5c2c7;}
+
+/* Modal info generik (Judul / Status / Jadwal / Berkas) */
+.wp-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99999;justify-content:center;align-items:center;overflow-y:auto;}
+.wp-modal-overlay.active{display:flex;}
+.wp-modal-box{background:#fff;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.3);width:92%;max-width:520px;max-height:90vh;overflow-y:auto;margin:auto;}
+.jadwal-header-bar{background:var(--navy);padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-radius:12px 12px 0 0;}
+.jadwal-header-bar h5{color:#fff;margin:0;font-size:1.02rem;font-weight:600;display:flex;align-items:center;gap:8px;}
+.jadwal-modal-close{background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer;width:32px;height:32px;border-radius:4px;}
+.jadwal-modal-close:hover{background:rgba(255,255,255,.2);}
+.jd-footer{padding:.85rem 1.4rem;border-top:1px solid #e9ecef;display:flex;justify-content:flex-end;}
+.jd-btn-tutup{background:#6c757d;border:none;border-radius:6px;padding:7px 22px;font-size:12px;color:#fff;cursor:pointer;}
+
+.jd-row{display:flex;gap:.5rem;margin-bottom:.6rem;font-size:.86rem;}
+.jd-label{font-weight:700;color:#6c757d;font-size:.72rem;text-transform:uppercase;min-width:100px;flex-shrink:0;margin-top:2px;}
+.jd-value{color:#212529;font-weight:600;line-height:1.5;}
+
+.st-block{margin-bottom:1.1rem;}
+.st-bt{font-size:.85rem;font-weight:700;color:#495057;display:flex;align-items:center;gap:.45rem;margin-bottom:.5rem;}
+.st-judul{background:var(--gray);border-left:3px solid var(--navy);border-radius:6px;padding:.85rem 1rem;font-weight:600;color:#212529;line-height:1.6;font-size:.92rem;}
+.st-person{display:flex;align-items:center;gap:.7rem;background:var(--gray);border-radius:8px;padding:.7rem .95rem;}
+.st-person-ic{width:34px;height:34px;border-radius:50%;background:#eef4ff;color:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.st-person-n{font-weight:600;font-size:.9rem;}
+
+.bk-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .85rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:#fff;}
+.bk-item:last-child{margin-bottom:0;}
+.bk-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.bk-ic.ok{background:#d1e7dd;color:#0f5132;}
+.bk-ic.no{background:#f8d7da;color:#842029;}
+.bk-name{flex:1;min-width:0;font-size:.86rem;font-weight:600;color:#212529;}
+
+/* ═══ Diadaptasi dari Dashboard Admin Seminar ═══ */
+.main-card { background:#fff; border-radius:14px; box-shadow:0 8px 32px rgba(11,46,107,.09); overflow:hidden; }
+.card-title-bar { background:var(--gray); border-bottom:1px solid var(--border); padding:1rem 1.4rem; }
+.ctb-left { font-weight:700; color:var(--navy); font-size:1rem; display:flex; align-items:center; gap:.5rem; }
+.ctb-left i { color:var(--gold); }
+.card-body-inner { padding:1.25rem 1.4rem; }
+
+.status-badge { display:inline-block; padding:.32rem .75rem; border-radius:20px; font-size:.75rem; font-weight:700; white-space:nowrap; text-align:center; }
+.sb-lengkap    { background:#cffafe; color:#0e7490; border:1px solid #a5f3fc; }
+.sb-menunggu   { background:#e2e8f5; color:#374259; }
+.sb-jadwal     { background:#d1e7dd; color:#0a3622; border:1px solid #a3cfbb; }
+.sb-tidak      { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+.sb-selesai    { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+
+.btn-dosen, .btn-lihat {
+  background:linear-gradient(135deg,var(--navy),#1a4a9e); color:#fff; border:none;
+  padding:.42rem .9rem; border-radius:7px; font-weight:600; font-size:.82rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.35rem; box-shadow:0 2px 8px rgba(11,46,107,.25);
+  transition:all .25s; text-decoration:none;
+}
+.btn-dosen:hover, .btn-lihat:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(11,46,107,.35); color:#fff; }
+
+.btn-bap {
+  display:inline-flex; align-items:center; gap:.35rem;
+  background:linear-gradient(135deg,#1a7a4a,#28a069); color:#fff; border:none;
+  padding:.42rem .9rem; border-radius:7px; font-size:.82rem; font-weight:600;
+  text-decoration:none; box-shadow:0 2px 8px rgba(26,122,74,.3);
+}
+
+.btn-revisi-cta {
+  display:inline-flex; align-items:center; gap:.35rem;
+  background:linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; border:none;
+  padding:.42rem .9rem; border-radius:20px; font-size:.82rem; font-weight:700; cursor:pointer;
+  box-shadow:0 2px 8px rgba(220,38,38,.35); animation:pulseBtn 1.5s infinite;
+}
+@keyframes pulseBtn { 0%,100%{box-shadow:0 2px 8px rgba(220,38,38,.35);} 50%{box-shadow:0 4px 16px rgba(220,38,38,.6); transform:translateY(-1px);} }
+
+.jadwal-none { color:#aaa; font-style:italic; font-size:.82rem; }
+
+/* Modal (dipakai untuk Jadwal / Judul / Dosen / Berkas) */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9999; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.modal-box { background:#fff; border-radius:14px; box-shadow:0 12px 48px rgba(0,0,0,.28); width:560px; max-width:95vw; max-height:92vh; overflow:auto; animation:slideUpM .3s; }
+@keyframes slideUpM { from{transform:translateY(40px);opacity:0;} to{transform:none;opacity:1;} }
+.modal-hdr { color:#fff; padding:1.1rem 1.4rem; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:space-between; }
+.modal-hdr.navy { background:linear-gradient(135deg,var(--navy),#1a4a9e); }
+.modal-hdr-title { font-weight:700; font-size:1rem; display:flex; align-items:center; gap:.5rem; margin:0; }
+.modal-close-btn { background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; width:30px; height:30px; border-radius:4px; }
+.modal-close-btn:hover { background:rgba(255,255,255,.2); }
+.modal-bdy { padding:1.4rem; }
+.modal-ftr { padding:.9rem 1.4rem; border-top:1px solid #e9ecef; display:flex; justify-content:flex-end; gap:.5rem; }
+.btn-sm-navy { height:36px; padding:0 .9rem; background:var(--navy); color:#fff; border:none; border-radius:6px; font-weight:600; font-size:.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:.3rem; }
+
+.dosen-block { border-radius:10px; padding:1rem 1.15rem; margin-bottom:.85rem; }
+.dosen-block.pb1 { background:linear-gradient(135deg,#eef4ff,#dce9ff); border:1.5px solid #c0d4f5; }
+.dosen-block.pb2 { background:linear-gradient(135deg,#f3f0ff,#e5dcff); border:1.5px solid #d0bfff; }
+.dosen-block .db-label { font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.4rem; }
+.dosen-block.pb1 .db-label { color:#2451a8; } .dosen-block.pb2 .db-label { color:#5a2fa8; }
+.dosen-block .db-name { font-weight:700; font-size:.92rem; }
+.dosen-block.pb1 .db-name { color:var(--navy); } .dosen-block.pb2 .db-name { color:#3a1a80; }
+
+.jadwal-detail-card { border-radius:12px; overflow:hidden; }
+.jadwal-detail-card.offline .jdc-header { background:linear-gradient(135deg,#fffbeb,#fef3c7); border:1.5px solid #fcd34d; }
+.jadwal-detail-card.online  .jdc-header { background:linear-gradient(135deg,#ecfeff,#cffafe); border:1.5px solid #67e8f9; }
+.jdc-header { padding:1rem 1.15rem; display:flex; align-items:center; gap:.75rem; }
+.jdc-icon { font-size:2.2rem; } .jdc-mode { font-weight:700; font-size:1rem; color:#374259; } .jdc-sub { font-size:.8rem; color:#7a8aaa; }
+.jadwal-detail-item { display:flex; align-items:flex-start; gap:.65rem; padding:.65rem 1.15rem; border-bottom:1px solid #f3f4f6; font-size:.87rem; }
+.jadwal-detail-item:last-child { border:none; }
+.jadwal-detail-item i { color:var(--navy); font-size:1rem; flex-shrink:0; margin-top:1px; }
+.jdi-label { font-weight:700; color:#555; font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:.15rem; }
+.jdi-value { color:#1a1a2e; font-weight:600; }
+
+.bk-item { display:flex; align-items:center; gap:.75rem; padding:.6rem .85rem; border:1px solid var(--border); border-radius:8px; margin-bottom:.5rem; background:#fff; }
+.bk-item:last-child { margin-bottom:0; }
+.bk-ic { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+.bk-ic.ok { background:#d1e7dd; color:#0f5132; }
+.bk-ic.no { background:#f8d7da; color:#842029; }
+.bk-name { flex:1; min-width:0; font-size:.86rem; font-weight:600; color:#374259; }
+</style>
+</head>
+<body>
+
+<div id="login-screen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0b2e6b,#1a4a9e);">
+  <div class="card shadow-lg" style="width:100%;max-width:380px;border:none;border-radius:16px;">
+    <div class="card-body p-4">
+      <div class="text-center mb-3">
+        <img src="https://hukum.upnvj.ac.id/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-14-at-13.45.20-1.png" style="width:60px;border-radius:50%;border:3px solid var(--gold);">
+        <h5 class="mt-2 fw-bold" style="color:var(--navy);">Portal Status Seminar Proposal</h5>
+        <p class="small text-muted mb-0"><i>Masuk menggunakan Akun yang sama saat berada di<br><b>Dashboard Pengajuan Judul</b></i></p>
+      </div>
+      <div id="loginError" class="alert alert-danger py-2 small d-none"></div>
+      <form id="loginForm">
+
+  <!-- NIM -->
+  <div class="mb-3">
+    <label class="form-label small login-label">
+      NIM
+    </label>
+
+    <div class="login-input-group">
+      <i class="bi bi-person-vcard input-icon"></i>
+
+      <input
+        type="text"
+        id="loginNim"
+        class="form-control login-input"
+        placeholder="Masukkan NIM Anda"
+        autocomplete="username"
+        required
+      >
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="mb-3">
+    <label class="form-label small login-label">
+      Password
+    </label>
+
+    <div class="login-input-group">
+      <i class="bi bi-lock input-icon"></i>
+
+      <input
+        type="password"
+        id="loginPassword"
+        class="form-control login-input"
+        placeholder="Masukkan password Anda"
+        autocomplete="current-password"
+        required
+      >
+
+      <button
+        type="button"
+        class="password-toggle"
+        onclick="togglePassword()"
+        aria-label="Tampilkan password"
+      >
+        <i class="bi bi-eye" id="passwordIcon"></i>
+      </button>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    id="loginBtn"
+    class="btn btn-navy w-100"
+    style="height:46px;border-radius:10px;"
+  >
+    <i class="bi bi-box-arrow-in-right me-1"></i>
+    Masuk
+  </button>
+
+</form>
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden style="display:none;">
+  <div class="header">
+    <img src="https://hukum.upnvj.ac.id/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-14-at-13.45.20-1.png">
+    <h5>Status Seminar Proposal Tesis</h5>
+  </div>
+
+  <div class="container py-4" style="max-width:1300px;">
+    <div class="d-flex justify-content-end mb-2">
+      <button class="btn btn-sm btn-outline-secondary" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Keluar</button>
+    </div>
+
+    <div id="loadingBox" class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+
+    <div id="content" style="display:none;">
+  <div class="main-card">
+    <div class="card-title-bar">
+      <div class="ctb-left"><i class="bi bi-file-earmark-text-fill"></i> Data Seminar Proposal Tesis Anda</div>
+    </div>
+    <div class="card-body-inner" style="overflow-x:auto;">
+      <table class="table table-bordered" style="width:100%;">
+        <thead>
+          <tr style="background:var(--navy);color:#fff;">
+            <th style="padding:.9rem .75rem;">Mahasiswa</th>
+            <th style="padding:.9rem .75rem;">Judul</th>
+            <th style="padding:.9rem .75rem;text-align:center;">Dosen Pembimbing</th>
+            <th style="padding:.9rem .75rem;text-align:center;">Status Berkas</th>
+            <th style="padding:.9rem .75rem;">Jadwal Ujian</th>
+            <th style="padding:.9rem .75rem;text-align:center;">BAP</th>
+            <th style="padding:.9rem .75rem;text-align:center;">Berkas</th>
+            <th style="padding:.9rem .75rem;text-align:center;">Revisi</th>
+          </tr>
+        </thead>
+        <tbody><tr id="rowSempro"></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+
+<!-- Modal Revisi -->
+<div class="modal fade" id="modalRevisi" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius:14px;">
+      <div class="modal-header" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border-radius:14px 14px 0 0;">
+        <h6 class="modal-title fw-bold"><i class="bi bi-pencil-square"></i> Revisi Berkas</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+        <div id="rvCheckList" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;"></div>
+        <div id="rvSlots"></div>
+      </div>
+      <div class="modal-footer">
+        <span class="small text-muted me-auto" id="rvProgress"></span>
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-danger btn-sm" id="rvSubmitBtn" onclick="submitRevisi()" disabled><i class="bi bi-send"></i> Kirim Revisi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Info Generik -->
+<div class="wp-modal-overlay" id="wpInfoOverlay" onclick="wpCloseInfo(event)">
+  <div class="wp-modal-box" onclick="event.stopPropagation()">
+    <div class="jadwal-header-bar">
+      <h5 id="wpInfoTitle">Detail</h5>
+      <button class="jadwal-modal-close" onclick="wpCloseInfo()">×</button>
+    </div>
+    <div id="wpInfoBody" style="padding:1.25rem;"></div>
+    <div class="jd-footer">
+      <button class="jd-btn-tutup" onclick="wpCloseInfo()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DOSEN -->
+<div class="modal-overlay" id="modalDosenOverlay">
+  <div class="modal-box">
+    <div class="modal-hdr navy"><p class="modal-hdr-title"><i class="bi bi-person-workspace"></i> Dosen Pembimbing</p><button class="modal-close-btn" onclick="closeModal('modalDosenOverlay')">×</button></div>
+    <div class="modal-bdy">
+      <div class="dosen-block pb1"><div class="db-label">Dosen Pembimbing 1</div><div class="db-name" id="mdPb1">—</div></div>
+      <div class="dosen-block pb2"><div class="db-label">Dosen Pembimbing 2</div><div class="db-name" id="mdPb2">—</div></div>
+    </div>
+    <div class="modal-ftr"><button class="btn-sm-navy" onclick="closeModal('modalDosenOverlay')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- MODAL: JUDUL -->
+<div class="modal-overlay" id="modalJudulOverlay">
+  <div class="modal-box">
+    <div class="modal-hdr navy"><p class="modal-hdr-title"><i class="bi bi-journal-text"></i> Detail Judul Tesis</p><button class="modal-close-btn" onclick="closeModal('modalJudulOverlay')">×</button></div>
+    <div class="modal-bdy" id="judulMhsContent"></div>
+    <div class="modal-ftr"><button class="btn-sm-navy" onclick="closeModal('modalJudulOverlay')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- MODAL: JADWAL -->
+<div class="modal-overlay" id="modalJadwalOverlay">
+  <div class="modal-box">
+    <div class="modal-hdr navy" id="jadwalModalHdr"><p class="modal-hdr-title" id="jadwalModalTitle"><i class="bi bi-calendar2-event"></i> Detail Jadwal Ujian</p><button class="modal-close-btn" onclick="closeModal('modalJadwalOverlay')">×</button></div>
+    <div class="modal-bdy" id="jadwalDetailContent"></div>
+    <div class="modal-ftr"><button class="btn-sm-navy" onclick="closeModal('modalJadwalOverlay')">Tutup</button></div>
+  </div>
+</div>
+
+<!-- MODAL: BERKAS -->
+<div class="modal-overlay" id="modalBerkasOverlay">
+  <div class="modal-box">
+    <div class="modal-hdr navy"><p class="modal-hdr-title"><i class="bi bi-folder2-open"></i> Daftar Berkas</p><button class="modal-close-btn" onclick="closeModal('modalBerkasOverlay')">×</button></div>
+    <div class="modal-bdy" id="berkasContent"></div>
+    <div class="modal-ftr"><button class="btn-sm-navy" onclick="closeModal('modalBerkasOverlay')">Tutup</button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxapkE-EjXCHBQzOo18JmYrX4Ds3a4SvzXZzqghFQY4W94taaK4BUfCGmcXrbaWTkzH/exec';
+let CURRENT_NIM = null;
+let record = null;
+let rvFiles = {};
+
+const FILE_LIST = [
+  { key:'spp', label:'Bukti Lunas SPP', ext:['pdf'], maxMB:2 },
+  { key:'khs', label:'Kartu Hasil Studi (KHS)', ext:['pdf'], maxMB:2 },
+  { key:'sertifikat_1', label:'Sertifikat Kuliah Umum', ext:['pdf'], maxMB:2 },
+  { key:'sertifikat_2', label:'Sertifikat Kunjungan Luar Negeri', ext:['pdf'], maxMB:2 },
+  { key:'persetujuan', label:'Lembar Persetujuan Ujian', ext:['pdf'], maxMB:2 },
+  { key:'monitoring_bimbingan', label:'Kartu Monitoring Bimbingan', ext:['pdf'], maxMB:2 },
+  { key:'toefl', label:'Sertifikat TOEFL', ext:['pdf'], maxMB:2 },
+  { key:'turnitin', label:'Turnitin', ext:['pdf'], maxMB:10 },
+  { key:'naskah', label:'Naskah Proposal Tesis', ext:['pdf','doc','docx'], maxMB:10 },
+  { key:'ppt', label:'PPT Presentasi', ext:['ppt','pptx'], maxMB:10 }
+];
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+async function post(data){
+  const r = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(data) });
+  return r.json();
+}
+
+function toShareUrl(url) {
+  if (!url || url === '-') return url;
+
+  const patterns = [
+    /\/(?:file|document|presentation|spreadsheets)\/d\/([a-zA-Z0-9_-]+)/,
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+    /\/open\?id=([a-zA-Z0-9_-]+)/
+  ];
+
+  let fileId = '';
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) { fileId = m[1]; break; }
+  }
+
+  if (!fileId) return url;
+
+  if (url.includes('/spreadsheets/'))
+    return `https://docs.google.com/spreadsheets/d/${fileId}/edit?usp=sharing`;
+  if (url.includes('/document/'))
+    return `https://docs.google.com/document/d/${fileId}/preview`;
+  if (url.includes('/presentation/'))
+    return `https://docs.google.com/presentation/d/${fileId}/preview`;
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  err.classList.add('d-none');
+  btn.disabled = true; btn.textContent = 'Memeriksa...';
+
+  const nim = document.getElementById('loginNim').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    const json = await post({ action:'studentLogin', nim, password });
+    if (json.status === 'success') {
+      sessionStorage.setItem('mhsNim', json.user.nim);
+      showApp(json.user.nim);
+    } else {
+      err.textContent = json.message || 'NIM atau password salah.';
+      err.classList.remove('d-none');
+    }
+  } catch (e2) {
+    err.textContent = 'Gagal menghubungi server: ' + e2.message;
+    err.classList.remove('d-none');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Masuk';
+  }
+});
+
+function logout(){ sessionStorage.removeItem('mhsNim'); location.reload(); }
+
+function showApp(nim){
+  CURRENT_NIM = nim;
+  document.getElementById('login-screen').hidden = true;
+  document.getElementById('login-screen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.hidden = false; app.style.display = 'block';
+  loadRecord();
+}
+
+async function loadRecord(){
+  document.getElementById('loadingBox').style.display = 'block';
+  document.getElementById('content').style.display = 'none';
+  try {
+    const json = await post({ action:'getMyRecord', nim: CURRENT_NIM });
+        if (json.status !== 'success' || !json.found) {
+      document.getElementById('content').style.display = 'none';
+      await Swal.fire({
+        icon: 'info',
+        title: 'Belum Terdaftar',
+        text: json.message || 'Akun Anda valid, tetapi Anda belum mendaftar Seminar Proposal Tesis. Silakan lakukan pendaftaran terlebih dahulu.',
+        confirmButtonText: 'Kembali ke Login'
+      });
+      logout();
+      return;
+    }
+    record = json;
+    render();
+  } catch (e) {
+    Swal.fire({ icon:'error', title:'Gagal Memuat', text: e.message });
+  } finally {
+    document.getElementById('loadingBox').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+}
+
+function toneVars(cls){
+  const map = {
+    'sb-lengkap':  {c:'#0e7490', c2:'#0a5a6e'},
+    'sb-jadwal':   {c:'#0a3622', c2:'#082b1c'},
+    'sb-tidak':    {c:'#dc2626', c2:'#b91c1c'},
+    'sb-selesai':  {c:'#198754', c2:'#146c43'},
+    'sb-menunggu': {c:'#6c757d', c2:'#565e64'}
+  };
+  const t = map[cls] || map['sb-menunggu'];
+  return `--tc:${t.c};--tc2:${t.c2};`;
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function openModal(id){ document.getElementById(id).classList.add('active'); document.body.style.overflow='hidden'; }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); document.body.style.overflow=''; }
+
+function render(){
+  const t = String(record.statusBerkas||'').trim();
+  let cls='sb-menunggu', label = t || 'Menunggu Upload Berkas';
+  if (t.includes('Lengkap')) cls='sb-lengkap';
+  else if (t.includes('Jadwal') || t.includes('Terverifikasi')) cls='sb-jadwal';
+  else if (t.includes('Tidak Memenuhi') || t.includes('Tidak Valid')) cls='sb-tidak';
+  else if (t.includes('Selesai')) cls='sb-selesai';
+
+  const statusCell = `<span class="status-badge ${cls}">${esc(label)}</span>`;
+
+  const jadwalCell = record.jadwal
+    ? `<button class="btn-lihat" onclick="showJadwalModal()"><i class="bi bi-calendar2-event"></i> Lihat Jadwal</button>`
+    : `<span class="jadwal-none">Belum dijadwalkan</span>`;
+
+  const bapCell = record.bap
+    ? `<a class="btn-bap" href="${esc(toShareUrl(record.bap))}" target="_blank"><i class="bi bi-file-earmark-text-fill"></i> Lihat BAP</a>`
+    : `<span class="jadwal-none">Belum tersedia</span>`;
+
+  const filled = FILE_LIST.filter(f => record.files[f.key]).length;
+  const berkasCell = `<button class="btn-lihat" onclick="showBerkasModal()"><i class="bi bi-folder2-open"></i> ${filled}/${FILE_LIST.length}</button>`;
+
+  const revisiCell = record.catatanKurang
+    ? `<button class="btn-revisi-cta" onclick="openRevisi()"><i class="bi bi-pencil-square"></i> Revisi</button>`
+    : `<span class="jadwal-none">—</span>`;
+
+  document.getElementById('rowSempro').innerHTML = `
+    <td><div class="mhs-nim" style="font-weight:700;color:var(--navy);">${esc(record.nim||'-')}</div><div class="mhs-nama" style="font-size:.82rem;color:#556;">${esc(record.nama||'-')}</div></td>
+    <td><button class="btn-lihat" onclick="showJudulModal()"><i class="bi bi-journal-text"></i> Lihat Judul</button></td>
+    <td style="text-align:center;"><button class="btn-dosen" onclick="showDosenModal()"><i class="bi bi-person-lines-fill"></i> Lihat Dosen</button></td>
+    <td style="text-align:center;">${statusCell}</td>
+    <td>${jadwalCell}</td>
+    <td style="text-align:center;">${bapCell}</td>
+    <td style="text-align:center;">${berkasCell}</td>
+    <td style="text-align:center;">${revisiCell}</td>
+  `;
+}
+
+function showDosenModal(){
+  document.getElementById('mdPb1').textContent = record.pembimbing1 || '(Belum ditetapkan)';
+  document.getElementById('mdPb2').textContent = record.pembimbing2 || '(Belum ditetapkan)';
+  openModal('modalDosenOverlay');
+}
+
+function showJudulModal(){
+  document.getElementById('judulMhsContent').innerHTML = `
+    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.2rem;">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:#166534;margin-bottom:.5rem;">Judul Tesis</div>
+      <div style="color:#1a2a4a;font-weight:600;line-height:1.65;font-size:.9rem;">${esc(record.judul||'Belum ada judul')}</div>
+    </div>`;
+  openModal('modalJudulOverlay');
+}
+
+function showJadwalModal(){
+  if (!record.jadwal) return;
+  const j = record.jadwal;
+  const isOnline = j.mode === 'Online';
+  document.getElementById('jadwalModalHdr').style.background = isOnline
+    ? 'linear-gradient(135deg,#0d9488,#047a6e)' : 'linear-gradient(135deg,#92400e,#b45309)';
+  document.getElementById('jadwalModalTitle').innerHTML = `<i class="bi bi-calendar2-event me-2"></i>Jadwal Ujian — ${esc(j.mode)}`;
+
+  const lokasiHtml = isOnline
+    ? `<div class="jadwal-detail-item"><i class="bi bi-link-45deg"></i><div><div class="jdi-label">Link Meeting</div><div class="jdi-value"><a href="${esc(j.link||'')}" target="_blank" style="color:#0d6efd;">${esc(j.link||'(tidak ada link)')}</a></div></div></div>`
+    : `<div class="jadwal-detail-item"><i class="bi bi-geo-alt"></i><div><div class="jdi-label">Tempat</div><div class="jdi-value">${esc(j.tempat||'—')}</div></div></div>`;
+
+  document.getElementById('jadwalDetailContent').innerHTML = `
+    <div class="jadwal-detail-card ${j.mode.toLowerCase()}">
+      <div class="jdc-header"><div class="jdc-icon">${isOnline?'💻':'🏛️'}</div><div><div class="jdc-mode">Ujian ${esc(j.mode)}</div><div class="jdc-sub">Detail jadwal seminar proposal tesis</div></div></div>
+      <div class="jadwal-detail-item"><i class="bi bi-calendar3"></i><div><div class="jdi-label">Tanggal</div><div class="jdi-value">${esc(j.tanggal||'—')}</div></div></div>
+      <div class="jadwal-detail-item"><i class="bi bi-clock"></i><div><div class="jdi-label">Waktu</div><div class="jdi-value">${esc(j.jam||'—')}${j.jamSelesai?' – '+esc(j.jamSelesai):''}</div></div></div>
+      ${lokasiHtml}
+      <div class="jadwal-detail-item"><i class="bi bi-person-check"></i><div><div class="jdi-label">Penguji 1</div><div class="jdi-value">${esc(j.penguji1||'(belum ditetapkan)')}</div></div></div>
+      <div class="jadwal-detail-item"><i class="bi bi-person-check"></i><div><div class="jdi-label">Penguji 2</div><div class="jdi-value">${esc(j.penguji2||'(belum ditetapkan)')}</div></div></div>
+    </div>`;
+  openModal('modalJadwalOverlay');
+}
+
+function showBerkasModal(){
+  document.getElementById('berkasContent').innerHTML = FILE_LIST.map(f => {
+    const url = record.files[f.key];
+    return url
+      ? `<div class="bk-item"><div class="bk-ic ok"><i class="bi bi-file-earmark-check-fill"></i></div><div class="bk-name">${esc(f.label)}</div><a class="btn-sm-navy" href="${esc(url)}" target="_blank" style="text-decoration:none;">Lihat</a></div>`
+      : `<div class="bk-item"><div class="bk-ic no"><i class="bi bi-exclamation-circle-fill"></i></div><div class="bk-name">${esc(f.label)}</div><span style="color:#dc2626;font-size:.78rem;font-weight:600;">Belum</span></div>`;
+  }).join('');
+  openModal('modalBerkasOverlay');
+}
+
+/* ── Modal-modal detail ── */
+function wpOpenInfo(title, bodyHtml){
+  document.getElementById('wpInfoTitle').innerHTML = title;
+  document.getElementById('wpInfoBody').innerHTML  = bodyHtml;
+  document.getElementById('wpInfoOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function wpCloseInfo(e){
+  if (e && e.target !== document.getElementById('wpInfoOverlay')) return;
+  document.getElementById('wpInfoOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function showJudulInfo(){
+  const html = `
+    <div class="st-block">
+      <div class="st-bt"><i class="bi bi-file-text-fill"></i> Judul Tesis</div>
+      <div class="st-judul">${esc(record.judul || 'Belum ada judul')}</div>
+    </div>
+    <div class="st-block" style="margin-bottom:0;">
+      <div class="st-bt"><i class="bi bi-person-check-fill"></i> Dosen Pembimbing</div>
+      <div class="st-person mb-2"><div class="st-person-ic"><i class="bi bi-person-fill"></i></div><div class="st-person-n">${esc(record.pembimbing1||'-')}</div></div>
+      <div class="st-person"><div class="st-person-ic"><i class="bi bi-person-fill"></i></div><div class="st-person-n">${esc(record.pembimbing2||'-')}</div></div>
+    </div>`;
+  wpOpenInfo('<i class="bi bi-card-text"></i> Detail Judul', html);
+}
+
+function showStatusInfo(){
+  let html = `<div class="st-judul" style="margin-bottom:1rem;">${esc(record.statusBerkas || 'Menunggu Upload Berkas')}</div>`;
+  if (record.catatanKurang) {
+    html += `<div class="st-block" style="margin-bottom:0;">
+      <div class="st-bt"><i class="bi bi-chat-left-text-fill"></i> Catatan dari Verifikator</div>
+      <div class="catatan-box">${esc(record.catatanKurang.catatan || '(Tidak ada catatan)')}</div>
+    </div>`;
+  }
+  wpOpenInfo('<i class="bi bi-info-circle-fill"></i> Status Berkas', html);
+}
+
+function showJadwalInfo(){
+  if (!record.jadwal) return;
+  const j = record.jadwal;
+  const lokasi = j.mode === 'Online'
+    ? `<div class="jd-row"><span class="jd-label">Link</span><span class="jd-value"><a href="${esc(j.link)}" target="_blank">${esc(j.link||'-')}</a></span></div>`
+    : `<div class="jd-row"><span class="jd-label">Tempat</span><span class="jd-value">${esc(j.tempat||'-')}</span></div>`;
+  const html = `
+    <div class="jd-row"><span class="jd-label">Mode</span><span class="jd-value">${esc(j.mode)}</span></div>
+    <div class="jd-row"><span class="jd-label">Tanggal</span><span class="jd-value">${esc(j.tanggal)}</span></div>
+    <div class="jd-row"><span class="jd-label">Waktu</span><span class="jd-value">${esc(j.jam)}${j.jamSelesai?' – '+esc(j.jamSelesai):''}</span></div>
+    ${lokasi}
+    <div class="jd-row"><span class="jd-label">Penguji 1</span><span class="jd-value">${esc(j.penguji1||'(belum ditetapkan)')}</span></div>
+    <div class="jd-row"><span class="jd-label">Penguji 2</span><span class="jd-value">${esc(j.penguji2||'(belum ditetapkan)')}</span></div>`;
+  wpOpenInfo('<i class="bi bi-calendar2-event"></i> Jadwal Ujian', html);
+}
+
+function showBerkasInfo(){
+  let items = '';
+  FILE_LIST.forEach(f => {
+    const url = record.files[f.key];
+    items += url
+      ? `<div class="bk-item">
+          <div class="bk-ic ok"><i class="bi bi-file-earmark-check-fill"></i></div>
+          <div class="bk-name">${esc(f.label)}</div>
+          <a class="btn-status bs-outline" href="${esc(url)}" target="_blank"><i class="bi bi-eye-fill"></i> Lihat</a>
+        </div>`
+      : `<div class="bk-item">
+          <div class="bk-ic no"><i class="bi bi-exclamation-circle-fill"></i></div>
+          <div class="bk-name">${esc(f.label)}</div>
+          <span class="chip-status chip-no"><i class="bi bi-x-circle-fill"></i> Belum</span>
+        </div>`;
+  });
+  wpOpenInfo('<i class="bi bi-folder2-open"></i> Daftar Berkas', items);
+}
+
+function openRevisi(){
+  rvFiles = {};
+  const check = document.getElementById('rvCheckList');
+  check.innerHTML = FILE_LIST.map(f => `
+    <label style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;border:1px solid var(--border);border-radius:8px;font-size:.82rem;">
+      <input type="checkbox" value="${f.key}" onchange="onRvCheck()"> ${esc(f.label)}
+    </label>`).join('');
+  document.getElementById('rvSlots').innerHTML = '';
+  document.getElementById('rvSubmitBtn').disabled = true;
+  document.getElementById('rvProgress').textContent = '';
+  new bootstrap.Modal(document.getElementById('modalRevisi')).show();
+}
+
+function togglePassword(){
+  const input = document.getElementById('loginPassword');
+  const icon = document.getElementById('passwordIcon');
+
+  if(input.type === 'password'){
+    input.type = 'text';
+    icon.classList.remove('bi-eye');
+    icon.classList.add('bi-eye-slash');
+  }else{
+    input.type = 'password';
+    icon.classList.remove('bi-eye-slash');
+    icon.classList.add('bi-eye');
+  }
+}
+
+function onRvCheck(){
+  const checked = [...document.querySelectorAll('#rvCheckList input:checked')].map(i => i.value);
+  const slots = document.getElementById('rvSlots');
+
+  // hapus slot yang tidak dicentang lagi
+  [...slots.children].forEach(el => { if (!checked.includes(el.dataset.key)) { el.remove(); delete rvFiles[el.dataset.key]; } });
+
+  checked.forEach(key => {
+    if (document.getElementById('slot-'+key)) return;
+    const f = FILE_LIST.find(x=>x.key===key);
+    const div = document.createElement('div');
+    div.id = 'slot-'+key; div.dataset.key = key;
+    div.style.cssText = 'border:1px solid var(--border);border-radius:8px;padding:.7rem;margin-bottom:.5rem;';
+    div.innerHTML = `<div class="small fw-bold mb-1">${esc(f.label)} <span class="text-muted">(${f.ext.join(', ').toUpperCase()}, maks ${f.maxMB}MB)</span></div>
+      <input type="file" accept="${f.ext.map(e=>'.'+e).join(',')}" onchange="onRvFile('${key}', ${f.maxMB}, this)">`;
+    slots.appendChild(div);
+  });
+  updateRvSubmit();
+}
+
+function onRvFile(key, maxMB, input){
+  const file = input.files[0];
+  const f = FILE_LIST.find(x=>x.key===key);
+  if (!file) { delete rvFiles[key]; updateRvSubmit(); return; }
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!f.ext.includes(ext)) { Swal.fire({icon:'warning',title:'Format tidak sesuai'}); input.value=''; delete rvFiles[key]; updateRvSubmit(); return; }
+  if (file.size > maxMB*1024*1024) { Swal.fire({icon:'warning',title:'File terlalu besar'}); input.value=''; delete rvFiles[key]; updateRvSubmit(); return; }
+  rvFiles[key] = file;
+  updateRvSubmit();
+}
+
+function updateRvSubmit(){
+  const checked = [...document.querySelectorAll('#rvCheckList input:checked')].map(i => i.value);
+  const allFilled = checked.length > 0 && checked.every(k => rvFiles[k]);
+  document.getElementById('rvSubmitBtn').disabled = !allFilled;
+  document.getElementById('rvProgress').textContent = checked.length ? `${checked.filter(k=>rvFiles[k]).length}/${checked.length} siap` : '';
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('Gagal baca file')); r.readAsDataURL(file); });
+}
+
+async function submitRevisi(){
+  const checked = [...document.querySelectorAll('#rvCheckList input:checked')].map(i => i.value);
+  if (!checked.length) return;
+  const btn = document.getElementById('rvSubmitBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengupload...';
+  let ok=0, errs=[];
+  for (const key of checked){
+    const f = FILE_LIST.find(x=>x.key===key);
+    const file = rvFiles[key];
+    try {
+      const base64 = await fileToBase64(file);
+      const resp = await post({ action:'uploadFile', nim:CURRENT_NIM, fileType:key, fileName:file.name, fileData:base64, fileLabel:f.label, isRevisi:true });
+      if (resp.status !== 'success') throw new Error(resp.message||'Gagal');
+      ok++;
+    } catch(e){ errs.push(f.label+': '+e.message); }
+  }
+  bootstrap.Modal.getInstance(document.getElementById('modalRevisi')).hide();
+  if (errs.length===0) {
+    await Swal.fire({icon:'success', title:'Revisi Terkirim', text:`${ok} berkas berhasil diupload.`});
+  } else {
+    await Swal.fire({icon:'warning', title:'Sebagian Gagal', html: errs.map(e=>`<div>${e}</div>`).join('')});
+  }
+  loadRecord();
+}
+
+// Restore sesi (per-tab)
+(function(){
+  const saved = sessionStorage.getItem('mhsNim');
+  if (saved) showApp(saved);
+})();
+</script>
+</body>
+</html>
